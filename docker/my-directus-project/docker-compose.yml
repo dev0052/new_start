@@ -1,0 +1,44 @@
+# docker-compose.yml
+
+version: '3'
+
+services:
+  directus:
+    image: directus/directus:latest
+    ports:
+      - '8055:8055'
+    volumes:
+      - ./uploads:/directus/uploads
+    environment:
+      # --- Core Configuration ---
+      # Replace these with your own unique values!
+      KEY: 'choose-a-random-string-for-the-key'
+      SECRET: 'qSidte7UJorCS2SqV1qQoep+Cnj5tN0YQXMD0Ojv3Jo='
+
+      # --- Database Connection ---
+      DB_CLIENT: 'pg'
+      DB_HOST: 'db'
+      DB_PORT: '5432'
+      DB_DATABASE: 'directus_db'
+      DB_USER: 'directus_user'
+      DB_PASSWORD: 'strong_password'
+
+      # --- Admin Account ---
+      # Set the email and password for your first admin user.
+      ADMIN_EMAIL: 'your-email@example.com'
+      ADMIN_PASSWORD: 'choose-a-strong-password'
+
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: 'directus_db'
+      POSTGRES_USER: 'directus_user'
+      POSTGRES_PASSWORD: 'strong_password'
+    volumes:
+      - directus_db_data:/var/lib/postgresql/data
+
+volumes:
+  directus_db_data:
